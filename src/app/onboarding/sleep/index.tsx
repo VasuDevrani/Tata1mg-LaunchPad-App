@@ -22,9 +22,9 @@ export default function WaterOnboardingScreen() {
         if (!user) return;
 
         try {
-            await saveGoal(user.id, 'steps', targetSleep, 'steps');
+            await saveGoal(user.id, 'sleep', targetSleep, 'sleep');
             // Navigate to next onboarding step
-            router.push('/onboarding/sleep');
+            router.push('/onboarding/currentWeight');
         } catch (error) {
             console.error('Error saving sleep goal:', error);
             Alert.alert('Error', 'Failed to save your goal. Please try again.');
@@ -36,7 +36,7 @@ export default function WaterOnboardingScreen() {
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" translucent={false} />
 
             {/* Header */}
-            <Header headerText='Sleep' skip skipRoute='/onboarding/sleep' backRoute='/onboarding/water'/>
+            <Header headerText='Sleep' skip skipRoute='/onboarding/currentWeight' backRoute='/onboarding/water'/>
 
             {/* Content */}
             <View style={styles.content}>

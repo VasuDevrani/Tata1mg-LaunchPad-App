@@ -2,7 +2,7 @@ import Header from '@/src/components/navbar';
 import RulerPicker from '@/src/components/StepRulerPicker';
 import { useAuth } from '@/src/context/auth';
 import { saveGoal } from '@/src/services/userService';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     Alert,
@@ -13,21 +13,21 @@ import {
     View,
 } from 'react-native';
 
-export default function WaterOnboardingScreen() {
+export default function MeditationOnboardingScreen() {
     const { user } = useAuth();
     const router = useRouter();
-    const [targetGlasses, setTargetGlasses] = useState(8);
+    const [meditationHrs, setmeditationHrs] = useState(55);
 
     const handleNext = async () => {
         if (!user) return;
 
         try {
-            await saveGoal(user.id, 'water', targetGlasses, 'water');
+            await saveGoal(user.id, 'meditationHrs', meditationHrs, 'meditationHrs');
             // Navigate to next onboarding step
-            router.push('/onboarding/sleep');
+            router.push('dashboard' as Href);
         } catch (error) {
-            console.error('Error saving water goal:', error);
-            Alert.alert('Error', 'Failed to save your goal. Please try again.');
+            console.error('Error saving your meditation hrs:', error);
+            Alert.alert('Error', 'Failed to save your meditation hrs. Please try again.');
         }
     };
 
@@ -36,23 +36,25 @@ export default function WaterOnboardingScreen() {
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" translucent={false} />
 
             {/* Header */}
-            <Header headerText='Water' skip skipRoute='/onboarding/sleep' backRoute='/onboarding/steps'/>
+            <Header headerText='Meditation' skip skipRoute='/dashboard' backRoute='/onboarding/currentWeight' />
 
             {/* Content */}
             <View style={styles.content}>
                 {/* Description */}
                 <Text style={styles.description}>
-                    Track your daily water intake. Drinking 2.5-3 liters daily supports digestion, skin health, and energy levels.</Text>
+                    Record your mindfulness minutes. Just 10 minutes of meditation a day can reduce stress and improve focus.
+                </Text>
+
                 <View style={styles.goalSection}>
                     <RulerPicker
-                        initialValue={10}
-                        onChange={setTargetGlasses}
-                        min={1}
-                        max={20}
+                        initialValue={25}
+                        onChange={setmeditationHrs}
+                        min={5}
+                        max={60}
                         base={1}
-                        unitLabel="glasses"
+                        unitLabel="min"
                         startPaddingWidth={24}
-                        snapInterval={20}
+                        snapInterval={12}
                     />
                 </View>
             </View>
@@ -71,13 +73,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
     },
     backButton: {
         width: 40,

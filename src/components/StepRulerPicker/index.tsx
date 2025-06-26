@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
+import { debounce } from 'lodash';
 import { View, ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -38,6 +39,11 @@ export default function RulerPicker({
         }, 100);
     }, []);
 
+    const debouncedOnChange = useMemo(
+        () => debounce((val: number) => onChange(val), 50),
+        [onChange]
+    );
+
     const handleScroll = (e: any) => {
         const offsetX = e.nativeEvent.contentOffset.x;
         let index = Math.round(offsetX / snapInterval);
@@ -48,7 +54,7 @@ export default function RulerPicker({
 
         if (value !== selectedValue) {
             setSelectedValue(value);
-            onChange(value);
+            debouncedOnChange(value);
         }
     };
 
@@ -81,7 +87,7 @@ export default function RulerPicker({
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     snapToInterval={snapInterval}
-                    decelerationRate="fast"
+                    decelerationRate="normal"
                     onMomentumScrollEnd={handleScrollEnd}
                     onScroll={handleScroll}
                     contentContainerStyle={{

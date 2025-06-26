@@ -36,7 +36,7 @@ export default function Header({ headerText, skip, skipRoute, backRoute }: { hea
 }
 
 const styles = StyleSheet.create({
-    header: { padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+    header: { padding: 15, paddingTop: 30, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
     backButtonText: { fontSize: 20, color: '#181A1F', fontWeight: '600' },
     backButtonContainer: { flexDirection: 'row', alignItems: 'center', gap: 8 },
     backIcon: { backgroundColor: "#F0F2F5", padding: 14, borderRadius: 100 },

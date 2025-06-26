@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/context/auth';
 import { LinearGradient } from 'expo-linear-gradient';
 import Header from '@/src/components/navbar';
@@ -23,6 +23,7 @@ export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
   
   const { signIn, signUp } = useAuth();
+  const router = useRouter();
 
   const validateInputs = () => {
     if (!email || !password) {
@@ -58,19 +59,24 @@ export default function AuthScreen() {
         if (isSignUp) {
           Alert.alert(
             'Success', 
-            'Account created successfully!',
+            'Account created successfully! Please sign in to continue',
           );
-        } 
+          setIsSignUp(!isSignUp);
+          setEmail('');
+          setPassword('');
+        } else {
+          Alert.alert(
+            'Success', 
+            'Signed in successfully!',
+          );
+          router.push('/onboarding/steps');
+        }
       }
     } catch (error) {
       Alert.alert('Error', 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleBackToLanding = () => {
-    router.back();
   };
 
   return (
@@ -80,7 +86,7 @@ export default function AuthScreen() {
         style={styles.keyboardView}
       >
         {/* Header */}
-        <Header headerText='Home'/>
+        <Header headerText='Home' backRoute='/landing'/>
 
         {/* Background Elements */}
         <LinearGradient

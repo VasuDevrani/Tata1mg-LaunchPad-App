@@ -45,7 +45,8 @@ export default function RootLayout() {
           <Stack.Screen name="onboarding/steps" options={{ headerShown: false, statusBarStyle: 'dark' }} />
           <Stack.Screen name="onboarding/water" options={{ headerShown: false, statusBarStyle: 'dark' }} />
           <Stack.Screen name="onboarding/sleep" options={{ headerShown: false, statusBarStyle: 'dark' }} />
-          <Stack.Screen name="onboarding/weight" options={{ headerShown: false, statusBarStyle: 'dark' }} />
+          <Stack.Screen name="onboarding/currentWeight" options={{ headerShown: false, statusBarStyle: 'dark' }} />
+          <Stack.Screen name="onboarding/goalWeight" options={{ headerShown: false, statusBarStyle: 'dark' }} />
           <Stack.Screen name="onboarding/meditation" options={{ headerShown: false, statusBarStyle: 'dark' }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" options={{ 
