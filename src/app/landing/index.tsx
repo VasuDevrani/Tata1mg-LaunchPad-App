@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,30 +11,46 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/src/context/auth';
+import { getUserProfile } from '@/src/services/userService';
 
 export default function LandingScreen() {
   const { user } = useAuth();
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      getUserProfile(user.id).then(profile => {
+        setOnboardingCompleted(profile?.onboarding_completed || false);
+      });
+    }
+  }, [user]);
+
   const handleSetGoals = () => {
-    if(user) router.push('/onboarding/steps');
-    else router.push('/auth');
+    if (!user) {
+      router.push('/auth');
+    } else if (onboardingCompleted) {
+      router.push('/dashboard');
+    } else {
+      router.push('/onboarding/steps');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar 
-        barStyle="dark-content" 
-        backgroundColor="#FFFFFF" 
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FFFFFF"
         translucent={false}
       />
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.logoContainer}>
-          <Image
-            source={require('@/src/assets/images/logo-landing-page.png')}
-            style={styles.logo}
-            resizeMode="center"
-          />
+            <Image
+              source={require('@/src/assets/images/logo-landing-page.png')}
+              style={styles.logo}
+              resizeMode="center"
+            />
           </View>
         </View>
       </View>
@@ -43,7 +59,7 @@ export default function LandingScreen() {
       <View style={styles.content}>
         {/* Illustration Container */}
         <View style={styles.illustrationContainer}>
-        <Image
+          <Image
             source={require('@/src/assets/images/landing-page.png')}
             style={styles.landingImage}
             resizeMode="contain"
@@ -60,7 +76,9 @@ export default function LandingScreen() {
 
         {/* Action Button */}
         <TouchableOpacity style={styles.setGoalsButton} onPress={handleSetGoals}>
-          <Text style={styles.buttonText}>Set Goals</Text>
+          <Text style={styles.buttonText}>{
+            onboardingCompleted ? 'Go to Dashboard' : 'Set Up Goals'
+          }</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -87,12 +105,12 @@ const styles = StyleSheet.create({
   },
   textContent: { alignItems: 'center', gap: 8, marginTop: 50, paddingHorizontal: 16 },
   title: { fontSize: 28, fontWeight: '700', color: '#181A1F', textAlign: 'center' },
-  subtitle: { 
-    fontSize: 12, 
-    color: '#181A1F', 
-    textAlign: 'center', 
+  subtitle: {
+    fontSize: 12,
+    color: '#181A1F',
+    textAlign: 'center',
     lineHeight: 16,
-    maxWidth: 286 
+    maxWidth: 286
   },
   setGoalsButton: {
     backgroundColor: '#FF5443',
@@ -103,9 +121,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 100,
   },
-  buttonText: { 
-    color: '#FFFFFF', 
-    fontSize: 14, 
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
     fontWeight: '700',
     textAlign: 'center'
   },

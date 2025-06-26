@@ -36,7 +36,7 @@ export default function GoalWeightOnboardingScreen() {
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" translucent={false} />
 
             {/* Header */}
-            <Header headerText='Goal Weight' skip skipRoute='/onboarding/Meditation' backRoute='/onboarding/currentWeight' />
+            <Header headerText='Goal Weight' skip skipRoute='/onboarding/meditation' backRoute='/onboarding/currentWeight' />
 
             {/* Content */}
             <View style={styles.content}>

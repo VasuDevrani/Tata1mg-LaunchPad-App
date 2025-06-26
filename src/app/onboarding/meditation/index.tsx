@@ -1,7 +1,7 @@
 import Header from '@/src/components/navbar';
 import RulerPicker from '@/src/components/StepRulerPicker';
 import { useAuth } from '@/src/context/auth';
-import { saveGoal } from '@/src/services/userService';
+import { saveGoal, completeOnboarding } from '@/src/services/userService';
 import { Href, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -23,6 +23,8 @@ export default function MeditationOnboardingScreen() {
 
         try {
             await saveGoal(user.id, 'meditationHrs', meditationHrs, 'meditationHrs');
+            // Mark onboarding as completed
+            await completeOnboarding(user.id);
             // Navigate to next onboarding step
             router.push('dashboard' as Href);
         } catch (error) {

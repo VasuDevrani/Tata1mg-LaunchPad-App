@@ -1,14 +1,26 @@
+import { useAuth } from "@/src/context/auth";
 import { Href, router } from "expo-router";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { completeOnboarding } from '@/src/services/userService';
 
 export default function Header({ headerText, skip, skipRoute, backRoute }: { headerText: string; skip?: boolean; skipRoute?: Href, backRoute?: Href }) {
+    const { user } = useAuth();
     const handleBack = () => {
         router.push(backRoute || '/landing');
     };
 
-    const handleSkip = () => {
+    const handleSkip = async () => {
         skipRoute = (skipRoute || '/dashboard') as Href;
+        
+        // If skipping to dashboard, mark onboarding as completed
+        if (user && skipRoute === '/dashboard') {
+            try {
+                await completeOnboarding(user.id);
+            } catch (error) {
+                console.error('Error completing onboarding:', error);
+            }
+        }
         router.push(skipRoute);
     };
 
