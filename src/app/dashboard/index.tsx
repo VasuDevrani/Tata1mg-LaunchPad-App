@@ -15,6 +15,9 @@ import { getUserGoals, Goal, getTodayTrackingEntries, TrackingEntry, getLatestWe
 import { Ionicons } from '@expo/vector-icons';
 import TrackerActionModal from '@/src/components/trackerActionModal';
 import TrackerIcon from '@/src/components/trackerIcon';
+import CircularProgress from '@/src/components/progressRing';
+import StepTrackerModal from '@/src/components/stepTrackerModal';
+import FitnessTrackerBottomSheet from '@/src/components/fitnessTrackerBottomsheet';
 import { useRouter } from 'expo-router';
 
 interface TrackerCardProps {
@@ -24,6 +27,7 @@ interface TrackerCardProps {
     unit: string;
     icon: string;
     color: string;
+    progress: number;
     onAction: () => void;
     actionType: 'add' | 'refresh';
 }
@@ -35,6 +39,7 @@ const TrackerCard: React.FC<TrackerCardProps> = ({
     unit,
     icon,
     color,
+    progress,
     onAction,
     actionType,
 }) => {
@@ -55,14 +60,21 @@ const TrackerCard: React.FC<TrackerCardProps> = ({
         <View style={styles.trackerCard}>
             <View style={styles.cardContent}>
                 <View style={styles.iconContainer}>
-                    <View style={[styles.iconBackground, { backgroundColor: '#F0F2F5' }]}>
-                        <View style={[styles.iconCircle, { backgroundColor: color }]} />
-                        <TrackerIcon
-                            type={icon}
-                            size={16}
-                            color="#1C1B1F"
-                        />
-                    </View>
+                    <CircularProgress
+                        size={44}
+                        strokeWidth={3}
+                        progress={progress}
+                        color={color}
+                        backgroundColor="#DDE2EB"
+                    >
+                        <View style={styles.iconBackground}>
+                            <TrackerIcon
+                                type={icon}
+                                size={16}
+                                color="#1C1B1F"
+                            />
+                        </View>
+                    </CircularProgress>
                 </View>
 
                 <View style={styles.textContent}>
@@ -93,6 +105,8 @@ export default function DashboardScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedTracker, setSelectedTracker] = useState<any>(null);
     const [currentWeight, setCurrentWeight] = useState<number>(0);
+    const [stepTrackerModalVisible, setStepTrackerModalVisible] = useState(false);
+    const [fitnessTrackerBottomSheetVisible, setFitnessTrackerBottomSheetVisible] = useState(false);
 
     const fetchGoals = async () => {
         if (!user) return;
@@ -144,8 +158,13 @@ export default function DashboardScreen() {
 
     const handleTrackerAction = (category: string, actionType: 'add' | 'refresh') => {
         if (actionType === 'refresh') {
-            // Refresh data
-            fetchGoals();
+            if (category === 'steps') {
+                // Show step tracker modal for steps
+                setStepTrackerModalVisible(true);
+            } else {
+                // Refresh data for other trackers
+                fetchGoals();
+            }
         } else if (actionType === 'add') {
             // Open modal for adding entry
             const trackerData = getTrackerData().find(t =>
@@ -156,8 +175,36 @@ export default function DashboardScreen() {
         }
     };
 
+    const handleStepTrackerConnect = () => {
+        setStepTrackerModalVisible(false);
+        setFitnessTrackerBottomSheetVisible(true);
+    };
+
+    const handleFitnessTrackerConnect = (trackerId: string) => {
+        console.log('Connected to:', trackerId);
+        // Handle tracker connection logic here
+    };
+
     const handleModalSuccess = () => {
         fetchGoals();
+    };
+
+    const calculateProgress = (current: number, target: number, category: string): number => {
+        if (target === 0) return 0;
+        
+        // Ensure we have valid numbers
+        if (isNaN(current) || isNaN(target)) return 0;
+        
+        if (category === 'Weight Tracker') {
+            // For weight, we calculate progress differently - closer to goal = higher progress
+            const goalWeight = goals.find(g => g.category === 'goalWeight')?.target_value || target;
+        }
+        
+        const progress = (current / target) * 100;
+        const clampedProgress = Math.max(0, Math.min(progress, 100));
+        
+        // Show minimum 2% progress for visual feedback when there's any activity
+        return clampedProgress > 0 ? Math.max(clampedProgress, 2) : 0;
     };
 
     const getCategoryKey = (title: string): string => {
@@ -179,52 +226,62 @@ export default function DashboardScreen() {
         const goalWeightGoal = getGoalByCategory('goalWeight');
         const meditationGoal = getGoalByCategory('meditationHrs');
 
+        const stepsData = {
+            title: 'Steps',
+            current: getCurrentProgress('steps'),
+            target: stepsGoal?.target_value || 10000,
+            unit: 'steps',
+            icon: 'steps',
+            color: '#FCAB10',
+            actionType: 'refresh' as const,
+        };
+
+        const waterData = {
+            title: 'Water',
+            current: getCurrentProgress('water'),
+            target: waterGoal?.target_value || 8,
+            unit: 'glass',
+            icon: 'water',
+            color: '#2684FE',
+            actionType: 'add' as const,
+        };
+
+        const sleepData = {
+            title: 'Sleep',
+            current: getCurrentProgress('sleep'),
+            target: sleepGoal?.target_value || 8,
+            unit: 'h',
+            icon: 'sleep',
+            color: '#44AF69',
+            actionType: 'add' as const,
+        };
+
+        const weightData = {
+            title: 'Weight Tracker',
+            current: currentWeight,
+            target: goalWeightGoal?.target_value || 0,
+            unit: 'kg',
+            icon: 'weight',
+            color: '#EE6352',
+            actionType: 'add' as const,
+        };
+
+        const meditationData = {
+            title: 'Meditation',
+            current: getCurrentProgress('meditationHrs'),
+            target: meditationGoal?.target_value || 10,
+            unit: 'min',
+            icon: 'meditation',
+            color: '#44AF69',
+            actionType: 'add' as const,
+        };
+
         return [
-            {
-                title: 'Steps',
-                current: getCurrentProgress('steps'),
-                target: stepsGoal?.target_value || 10000,
-                unit: 'steps',
-                icon: 'steps',
-                color: '#FCAB10',
-                actionType: 'refresh' as const,
-            },
-            {
-                title: 'Water',
-                current: getCurrentProgress('water'),
-                target: waterGoal?.target_value || 8,
-                unit: 'glass',
-                icon: 'water',
-                color: '#2684FE',
-                actionType: 'add' as const,
-            },
-            {
-                title: 'Sleep',
-                current: getCurrentProgress('sleep'),
-                target: sleepGoal?.target_value || 8,
-                unit: 'h',
-                icon: 'sleep',
-                color: '#44AF69',
-                actionType: 'add' as const,
-            },
-            {
-                title: 'Weight Tracker',
-                current: currentWeight,
-                target: goalWeightGoal?.target_value || 0,
-                unit: 'kg',
-                icon: 'weight',
-                color: '#EE6352',
-                actionType: 'add' as const,
-            },
-            {
-                title: 'Meditation',
-                current: getCurrentProgress('meditationHrs'),
-                target: meditationGoal?.target_value || 10,
-                unit: 'min',
-                icon: 'meditation',
-                color: '#44AF69',
-                actionType: 'add' as const,
-            },
+            { ...stepsData, progress: calculateProgress(stepsData.current, stepsData.target, stepsData.title) },
+            { ...waterData, progress: calculateProgress(waterData.current, waterData.target, waterData.title) },
+            { ...sleepData, progress: calculateProgress(sleepData.current, sleepData.target, sleepData.title) },
+            { ...weightData, progress: calculateProgress(weightData.current, weightData.target, weightData.title) },
+            { ...meditationData, progress: calculateProgress(meditationData.current, meditationData.target, meditationData.title) },
         ];
     };
 
@@ -302,6 +359,7 @@ export default function DashboardScreen() {
                                 unit={tracker.unit}
                                 icon={tracker.icon}
                                 color={tracker.color}
+                                progress={tracker.progress}
                                 actionType={tracker.actionType}
                                 onAction={() => handleTrackerAction(tracker.title.toLowerCase().replace(' tracker', '').replace(' ', ''), tracker.actionType)}
                             />
@@ -334,6 +392,20 @@ export default function DashboardScreen() {
                     onSuccess={handleModalSuccess}
                 />
             )}
+
+            {/* Step Tracker Modal */}
+            <StepTrackerModal
+                visible={stepTrackerModalVisible}
+                onClose={() => setStepTrackerModalVisible(false)}
+                onConnectPress={handleStepTrackerConnect}
+            />
+
+            {/* Fitness Tracker Bottom Sheet */}
+            <FitnessTrackerBottomSheet
+                visible={fitnessTrackerBottomSheetVisible}
+                onClose={() => setFitnessTrackerBottomSheetVisible(false)}
+                onTrackerConnect={handleFitnessTrackerConnect}
+            />
         </View>
     );
 }
@@ -460,18 +532,12 @@ const styles = StyleSheet.create({
         height: 44,
     },
     iconBackground: {
-        width: 44,
-        height: 44,
-        borderRadius: 30,
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    iconCircle: {
-        position: 'absolute',
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        opacity: 0.8,
     },
     icon: {
         zIndex: 1,
