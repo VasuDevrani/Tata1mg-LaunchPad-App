@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 export interface UserProfile {
   id: string;
   full_name?: string;
+  gender?: string;
   onboarding_completed: boolean;
   created_at: string;
   updated_at: string;
@@ -20,12 +21,13 @@ export interface Goal {
 }
 
 // Create user profile after sign up
-export const createUserProfile = async (userId: string, fullName?: string) => {
+export const createUserProfile = async (userId: string, fullName?: string, gender?: string) => {
   const { data, error } = await supabase
     .from('profiles')
     .insert({
       id: userId,
       full_name: fullName,
+      gender: gender,
       onboarding_completed: false
     })
     .select()
