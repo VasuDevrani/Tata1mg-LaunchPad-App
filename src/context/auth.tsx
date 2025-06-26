@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
+import { createUserProfile } from '../services/userService';
 
 interface AuthContextType {
   user: User | null;
@@ -42,7 +43,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    // Create user profile after successful signup
+    if (!error && data.user) {
+      try {
+        await createUserProfile(data.user.id, email);
+      } catch (profileError) {
+        console.error('Error creating profile:', profileError);
+      }
+    }
+
     return { error };
   };
 

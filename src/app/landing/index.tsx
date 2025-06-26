@@ -10,10 +10,13 @@ import {
   Image
 } from 'react-native';
 import { router } from 'expo-router';
+import { useAuth } from '@/src/context/auth';
 
 export default function LandingScreen() {
+  const { user } = useAuth();
   const handleSetGoals = () => {
-    router.push('/auth');
+    if(user) router.push('/onboarding/steps');
+    else router.push('/auth');
   };
 
   return (
@@ -28,7 +31,7 @@ export default function LandingScreen() {
         <View style={styles.headerContent}>
           <View style={styles.logoContainer}>
           <Image
-            source={require('@/assets/images/logo-landing-page.png')}
+            source={require('@/src/assets/images/logo-landing-page.png')}
             style={styles.logo}
             resizeMode="center"
           />
@@ -41,7 +44,7 @@ export default function LandingScreen() {
         {/* Illustration Container */}
         <View style={styles.illustrationContainer}>
         <Image
-            source={require('@/assets/images/landing-page.png')}
+            source={require('@/src/assets/images/landing-page.png')}
             style={styles.landingImage}
             resizeMode="contain"
           />

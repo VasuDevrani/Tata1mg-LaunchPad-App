@@ -14,6 +14,7 @@ import {
 import { router } from 'expo-router';
 import { useAuth } from '@/src/context/auth';
 import { LinearGradient } from 'expo-linear-gradient';
+import Header from '@/src/components/navbar';
 
 export default function AuthScreen() {
   const [email, setEmail] = useState('');
@@ -57,7 +58,7 @@ export default function AuthScreen() {
         if (isSignUp) {
           Alert.alert(
             'Success', 
-            'Account created successfully! Please check your email to verify your account.',
+            'Account created successfully!',
           );
         } 
       }
@@ -79,11 +80,7 @@ export default function AuthScreen() {
         style={styles.keyboardView}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBackToLanding} style={styles.backButton}>
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-        </View>
+        <Header headerText='Home'/>
 
         {/* Background Elements */}
         <LinearGradient
@@ -163,7 +160,7 @@ const styles = StyleSheet.create({
   keyboardView: { flex: 1 },
   header: { padding: 16, paddingTop: 20 },
   backButton: { alignSelf: 'flex-start' },
-  backButtonText: { fontSize: 16, color: '#181A1F', fontWeight: '600' },
+  backButtonText: { fontSize: 20, color: '#181A1F', fontWeight: '600' },
   gradientCircle: { position: 'absolute', borderRadius: 50 },
   topCircle: { width: 100, height: 97, top: 100, left: -30 },
   bottomCircle: { width: 200, height: 200, bottom: 50, right: -50 },
@@ -209,5 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: '700' 
   },
   switchButton: { alignItems: 'center' },
+  backButtonContainer: {flexDirection: 'row', alignItems: 'center', marginTop: 24, gap: 8},
   switchText: { color: '#FF5443', fontSize: 14, fontWeight: '600' },
+  backIcon: {backgroundColor: "#F0F2F5", padding: 14, borderRadius: 100}
 });
