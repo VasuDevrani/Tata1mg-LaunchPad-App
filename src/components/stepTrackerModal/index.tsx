@@ -12,12 +12,14 @@ interface StepTrackerModalProps {
   visible: boolean;
   onClose: () => void;
   onConnectPress: () => void;
+  isManualConnection?: boolean;
 }
 
-export default function StepTrackerModal({ 
-  visible, 
-  onClose, 
-  onConnectPress 
+export default function StepTrackerModal({
+  visible,
+  onClose,
+  onConnectPress,
+  isManualConnection = false,
 }: StepTrackerModalProps) {
   const handleConnectPress = () => {
     onConnectPress();
@@ -33,7 +35,7 @@ export default function StepTrackerModal({
     >
       <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" barStyle="light-content" translucent />
       <View style={styles.overlay}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backdrop}
           onPress={onClose}
           activeOpacity={1}
@@ -45,9 +47,21 @@ export default function StepTrackerModal({
               One step closer to your goals — connect your tracker to begin.
             </Text>
           </View>
-          
+
+          {isManualConnection && <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.goManualButton}
+              onPress={handleConnectPress}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.goManualButtonText}>
+                I will go manually
+              </Text>
+            </TouchableOpacity>
+          </View>}
+
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.connectButton}
               onPress={handleConnectPress}
               activeOpacity={0.8}
@@ -122,6 +136,23 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     alignItems: 'center',
+  },
+  goManualButton: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: '#FF5443',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  goManualButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FF5443',
+    textAlign: 'center',
+    fontFamily: 'Figtree',
   },
   connectButtonText: {
     fontSize: 14,

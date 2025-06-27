@@ -12,7 +12,7 @@ import GlobalModal from '../globalModal';
 interface FitnessTracker {
   id: string;
   name: string;
-  image: any; // For now, using placeholder
+  image: any;
   connected: boolean;
 }
 
@@ -22,20 +22,20 @@ interface FitnessTrackerBottomSheetProps {
   onTrackerConnect: (trackerId: string) => void;
 }
 
-export default function FitnessTrackerBottomSheet({ 
-  visible, 
-  onClose, 
-  onTrackerConnect 
+export default function FitnessTrackerBottomSheet({
+  visible,
+  onClose,
+  onTrackerConnect
 }: FitnessTrackerBottomSheetProps) {
   const [trackers, setTrackers] = useState<FitnessTracker[]>([
-    { id: 'google-fit', name: 'Google Fit', image: null, connected: true },
-    { id: 'apple-health', name: 'Apple Health', image: null, connected: false },
-    { id: 'strava', name: 'Strava', image: null, connected: false },
-    { id: 'fitbit', name: 'Fitbit', image: null, connected: false },
+    { id: 'google-fit', name: 'Google Fit', image: require('@/src/assets/images/google-connect.png'), connected: false },
+    { id: 'apple-health', name: 'Apple Health', image: require('@/src/assets/images/apple-connect.png'), connected: false },
+    { id: 'strava', name: 'Strava', image: require('@/src/assets/images/strava-connect.png'), connected: false },
+    { id: 'fitbit', name: 'Fitbit', image: require('@/src/assets/images/fitbit-connect.png'), connected: false },
   ]);
 
   const handleTrackerPress = (trackerId: string) => {
-    setTrackers(prev => 
+    setTrackers(prev =>
       prev.map(tracker => ({
         ...tracker,
         connected: tracker.id === trackerId ? !tracker.connected : false
@@ -48,36 +48,22 @@ export default function FitnessTrackerBottomSheet({
     <GlobalModal
       visible={visible}
       onClose={onClose}
-      backgroundOpacity={0.2}
-      showCloseButton={false}
+      backgroundOpacity={0.5}
+      showCloseButton={true}
     >
       <View style={styles.container}>
-        {/* Close button */}
-        <View style={styles.closeButtonContainer}>
-          <TouchableOpacity 
-            style={styles.closeButton}
-            onPress={onClose}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <View style={styles.closeIcon}>
-              <View style={styles.closeLine1} />
-              <View style={styles.closeLine2} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
         {/* Content */}
         <View style={styles.content}>
           <View style={styles.header}>
             <Text style={styles.title}>Connect your fitness tracker</Text>
           </View>
-          
+
           <View style={styles.body}>
             <Text style={styles.description}>
               Select a application you want to connect to track your steps/calories
             </Text>
-            
-            <ScrollView 
+
+            <ScrollView
               style={styles.trackersList}
               showsVerticalScrollIndicator={false}
             >
@@ -92,17 +78,17 @@ export default function FitnessTrackerBottomSheet({
                   activeOpacity={0.7}
                 >
                   <View style={styles.trackerIcon}>
-                    {/* Placeholder for tracker icon */}
-                    <View style={[
-                      styles.iconPlaceholder,
-                      { backgroundColor: getTrackerColor(tracker.id) }
-                    ]} />
+                    <Image
+                      source={tracker.image}
+                      style={styles.trackerImage}
+                      resizeMode="contain"
+                    />
                   </View>
-                  
+
                   <View style={styles.trackerContent}>
                     <Text style={styles.trackerName}>{tracker.name}</Text>
                   </View>
-                  
+
                   {tracker.connected && (
                     <View style={styles.connectedButton}>
                       <Text style={styles.connectedButtonText}>Connected</Text>
@@ -228,6 +214,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  trackerImage: {
+    width: 32,
+    height: 32,
   },
   iconPlaceholder: {
     width: 40,

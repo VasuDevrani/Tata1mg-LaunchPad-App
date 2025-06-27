@@ -16,8 +16,10 @@ import { Ionicons } from '@expo/vector-icons';
 import TrackerActionModal from '@/src/components/trackerActionModal';
 import TrackerIcon from '@/src/components/trackerIcon';
 import CircularProgress from '@/src/components/progressRing';
-import StepTrackerModal from '@/src/components/stepTrackerModal';
+import TrackerModal from '@/src/components/stepTrackerModal';
 import FitnessTrackerBottomSheet from '@/src/components/fitnessTrackerBottomsheet';
+import ChallengesSection from '@/src/components/challenges';
+import AssessmentsSection from '@/src/components/assessments';
 import { useRouter } from 'expo-router';
 
 interface TrackerCardProps {
@@ -106,6 +108,8 @@ export default function DashboardScreen() {
     const [selectedTracker, setSelectedTracker] = useState<any>(null);
     const [currentWeight, setCurrentWeight] = useState<number>(0);
     const [stepTrackerModalVisible, setStepTrackerModalVisible] = useState(false);
+    const [waterTrackerModalVisible, setWaterTrackerModalVisible] = useState(false);
+    const [sleepTrackerModalVisible, setSleepTrackerModalVisible] = useState(false);
     const [fitnessTrackerBottomSheetVisible, setFitnessTrackerBottomSheetVisible] = useState(false);
 
     const fetchGoals = async () => {
@@ -177,32 +181,57 @@ export default function DashboardScreen() {
 
     const handleStepTrackerConnect = () => {
         setStepTrackerModalVisible(false);
+        setWaterTrackerModalVisible(false);
+        setSleepTrackerModalVisible(false);
+
+        // Show fitness tracker bottom sheet for step tracking
         setFitnessTrackerBottomSheetVisible(true);
     };
 
     const handleFitnessTrackerConnect = (trackerId: string) => {
         console.log('Connected to:', trackerId);
         // Handle tracker connection logic here
+        setFitnessTrackerBottomSheetVisible(false);
     };
 
     const handleModalSuccess = () => {
         fetchGoals();
     };
 
+    const handleChallengePress = (challengeId: string) => {
+        console.log('Challenge pressed:', challengeId);
+        // TODO: Navigate to challenge details or open challenge modal
+    };
+
+    const handleSeeAllChallenges = () => {
+        console.log('See all challenges pressed');
+        // TODO: Navigate to full challenges list page
+    };
+
+    const handleAssessmentPress = (assessmentId: string) => {
+        console.log('Assessment pressed:', assessmentId);
+        // TODO: Navigate to assessment details or start assessment
+    };
+
+    const handleSeeAllAssessments = () => {
+        console.log('See all assessments pressed');
+        // TODO: Navigate to full assessments list page
+    };
+
     const calculateProgress = (current: number, target: number, category: string): number => {
         if (target === 0) return 0;
-        
+
         // Ensure we have valid numbers
         if (isNaN(current) || isNaN(target)) return 0;
-        
+
         if (category === 'Weight Tracker') {
             // For weight, we calculate progress differently - closer to goal = higher progress
             const goalWeight = goals.find(g => g.category === 'goalWeight')?.target_value || target;
         }
-        
+
         const progress = (current / target) * 100;
         const clampedProgress = Math.max(0, Math.min(progress, 100));
-        
+
         // Show minimum 2% progress for visual feedback when there's any activity
         return clampedProgress > 0 ? Math.max(clampedProgress, 2) : 0;
     };
@@ -312,9 +341,9 @@ export default function DashboardScreen() {
                 {/* Greeting */}
                 <View style={styles.greetingSection}>
                     <Text style={styles.greeting}>
-                        Hey {user?.user_metadata?.full_name || 
-                             user?.user_metadata?.name || 
-                             'there!'}
+                        Hey {user?.user_metadata?.full_name ||
+                            user?.user_metadata?.name ||
+                            'there!'}
                     </Text>
                     <Text style={styles.subtitle}>Let's make today count</Text>
                 </View>
@@ -369,15 +398,17 @@ export default function DashboardScreen() {
 
                 {/* Other Tabs Content */}
                 {activeTab === 'Challenges' && (
-                    <View style={styles.emptyContent}>
-                        <Text style={styles.emptyText}>Challenges coming soon!</Text>
-                    </View>
+                    <ChallengesSection
+                        onChallengePress={handleChallengePress}
+                        onSeeAllPress={handleSeeAllChallenges}
+                    />
                 )}
 
                 {activeTab === 'Assessments' && (
-                    <View style={styles.emptyContent}>
-                        <Text style={styles.emptyText}>Assessments coming soon!</Text>
-                    </View>
+                    <AssessmentsSection
+                        onAssessmentPress={handleAssessmentPress}
+                        onSeeAllPress={handleSeeAllAssessments}
+                    />
                 )}
             </View>
             {/* Tracker Action Modal */}
@@ -394,10 +425,26 @@ export default function DashboardScreen() {
             )}
 
             {/* Step Tracker Modal */}
-            <StepTrackerModal
+            <TrackerModal
                 visible={stepTrackerModalVisible}
                 onClose={() => setStepTrackerModalVisible(false)}
                 onConnectPress={handleStepTrackerConnect}
+            />
+
+            {/* Water Tracker Modal */}
+            <TrackerModal
+                visible={waterTrackerModalVisible}
+                onClose={() => setWaterTrackerModalVisible(false)}
+                onConnectPress={handleStepTrackerConnect}
+                isManualConnection={true}
+            />
+
+            {/* Sleep Tracker Modal */}
+            <TrackerModal
+                visible={sleepTrackerModalVisible}
+                onClose={() => setSleepTrackerModalVisible(false)}
+                onConnectPress={handleStepTrackerConnect}
+                isManualConnection={true}
             />
 
             {/* Fitness Tracker Bottom Sheet */}

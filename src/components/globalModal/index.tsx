@@ -50,20 +50,20 @@ export default function GlobalModal({
         }),
         Animated.timing(backgroundOpacityAnim, {
           toValue: backgroundOpacity,
-          duration: 250,
+          duration: 600,
           useNativeDriver: true,
         }),
       ]).start();
     } else {
       Animated.parallel([
         Animated.timing(translateY, {
-          toValue: SCREEN_HEIGHT,
+          toValue: 0,
           duration: 250,
           useNativeDriver: true,
         }),
         Animated.timing(backgroundOpacityAnim, {
           toValue: 0,
-          duration: 250,
+          duration: 0,
           useNativeDriver: true,
         }),
       ]).start();
@@ -97,7 +97,7 @@ export default function GlobalModal({
     <Modal
       visible={visible}
       transparent
-      animationType="none"
+      animationType="slide"
       presentationStyle={presentationStyle}
       onRequestClose={onClose}
       statusBarTranslucent
@@ -124,7 +124,7 @@ export default function GlobalModal({
             styles.modalContent,
             { 
               transform: [{ translateY }],
-              paddingTop: insets.top 
+              paddingTop: insets.top
             }
           ]}
           {...panResponder.panHandlers}
@@ -166,11 +166,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: 'transparent',
+    bottom: 0,
   },
   closeButtonContainer: {
     alignItems: 'flex-end',

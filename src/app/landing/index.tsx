@@ -20,7 +20,8 @@ export default function LandingScreen() {
   useEffect(() => {
     if (user) {
       getUserProfile(user.id).then(profile => {
-        setOnboardingCompleted(profile?.onboarding_completed || false);
+        setOnboardingCompleted(profile?.onboarding_completed || false
+        );
       });
     }
   }, [user]);
@@ -48,7 +49,6 @@ export default function LandingScreen() {
           <View style={styles.logoContainer}>
             <Image
               source={require('@/src/assets/images/logo-landing-page.png')}
-              style={styles.logo}
               resizeMode="center"
             />
           </View>
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   header: { padding: 16 },
   headerContent: { flexDirection: 'row', alignItems: 'center' },
   logoContainer: { flex: 1, alignItems: 'center' },
-  logo: {},
   content: { flex: 1, alignItems: 'center', paddingHorizontal: 16 },
   illustrationContainer: {
     width: 300,
