@@ -1,50 +1,109 @@
-# Welcome to your Expo app 👋
+# Health Engagement App - Launchpad 2025 Project Documentation
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Project Overview
+**Health Engagement** is a comprehensive React Native mobile application developed for Tata 1mg's Launchpad 2025 event. Built from scratch as a solo endeavor, this app focuses on personal health tracking and engagement through gamified wellness features.
 
-## Get started
+[DEMO VIDEO](https://drive.google.com/file/d/15YPLzZmc26oymeuQ_KmhIl8qmm4tyXCt/view?usp=drivesdk)
 
-1. Install dependencies
+## Technology Stack
 
-   ```bash
-   npm install
-   ```
+### Frontend
+- **React Native** (0.79.4) with **Expo** (~53.0.12) - Cross-platform mobile development
+- **TypeScript** (~5.8.3) - Type-safe development
+- **Expo Router** (~5.1.0) - File-based navigation system
+- **React Navigation** - Advanced navigation with stack and tab navigators
 
-2. Start the app
+### Backend & Database
+- **Supabase** (^2.50.2) - Backend-as-a-Service with PostgreSQL database
+- **AsyncStorage** - Local data persistence
+- **Real-time subscriptions** - Live data synchronization
 
-   ```bash
-   npx expo start
-   ```
+### UI/UX Libraries
+- **Expo Linear Gradient** - Beautiful gradient backgrounds
+- **React Native Reanimated** - Smooth animations
+- **React Native SVG** - Scalable vector graphics
+- **Expo Vector Icons** - Comprehensive icon library
+- **React Native Elements** - Pre-built UI components
 
-In the output, you'll find options to open the app in a
+## Key Features Implemented
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 1. **User Authentication & Onboarding**
+- Secure user registration and login via Supabase Auth
+- Comprehensive onboarding flow capturing user health goals
+- Profile management with gender selection and goal setting
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 2. **Health Tracking Dashboard**
+- **Multi-category tracking**: Steps, water intake, sleep, weight, meditation
+- **Progress visualization** with circular progress rings
+- **Real-time updates** and goal progress monitoring
+- **Intuitive tracker cards** with add/refresh actions
 
-## Get a fresh project
+### 3. **Gamified Assessments System**
+- Health assessments with points-based rewards
+- Progress tracking and completion status
+- Category-based organization (Mental Health, Fitness, Nutrition)
+- Resume functionality for incomplete assessments
 
-When you're ready, run:
+### 4. **Challenges & Engagement**
+- Daily and weekly health challenges
+- Community engagement features
+- Achievement tracking and rewards system
 
-```bash
-npm run reset-project
-```
+### 5. **Data Management**
+- **PostgreSQL schema** with tables for profiles, goals, tracking entries, and logs
+- **Migration system** for database schema updates
+- **Real-time data synchronization** across devices
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Technical Implementation
 
-## Learn more
+### Architecture
+- **File-based routing** using Expo Router for scalable navigation
+- **Component-based architecture** with reusable UI components
+- **Context API** for global state management (authentication)
+- **Service layer** abstraction for data operations
 
-To learn more about developing your project with Expo, look at the following resources:
+### Database Design
+- **Normalized schema** with proper foreign key relationships
+- **User profiles** linked to authentication system
+- **Flexible tracking system** supporting multiple health categories
+- **Goal management** with target values and progress tracking
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Performance Optimizations
+- **Lazy loading** of components and screens
+- **Efficient re-renders** using React hooks optimization
+- **Image optimization** with Expo Image
+- **Bundle splitting** for improved app performance
 
-## Join the community
+## Key Achievements
 
-Join our community of developers creating universal apps.
+### 1. **Rapid Development**
+- Built complete MVP in hackathon timeframe
+- Zero-to-production ready app architecture
+- Comprehensive feature set spanning multiple health domains
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 2. **User Experience Excellence**
+- **Intuitive onboarding** with step-by-step goal setting
+- **Responsive design** adapting to different screen sizes
+- **Smooth animations** enhancing user interaction
+- **Accessibility considerations** with proper contrast and touch targets
+
+### 3. **Scalable Architecture**
+- **Modular component structure** enabling easy feature additions
+- **Type-safe development** reducing runtime errors
+- **Environment-specific configurations** for development and production
+- **Database migrations** supporting schema evolution
+
+### 4. **Integration Capabilities**
+- **Third-party fitness app integration** foundation (Apple Health, Google Fit, Strava, Fitbit)
+- **Real-time synchronization** capabilities
+- **Extensible service architecture** for additional integrations
+
+## Future Enhancements
+- Advanced analytics and health insights
+- Social features and community challenges
+- AI-powered health recommendations
+- Wearable device integrations
+- Healthcare provider integrations
+
+---
+*This project demonstrates the capability to rapidly prototype and develop production-ready mobile applications using modern React Native ecosystem, delivering a comprehensive health engagement platform that prioritizes user experience and scalability.*
